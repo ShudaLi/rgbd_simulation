@@ -8,8 +8,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 find_package(CUDA)
 include(FindCUDA)
 
-find_package( OpenCV REQUIRED PATHS $ENV{OPENCV_NEW_2012} /usr NO_DEFAULT_PATH )
-include_directories ( $ENV{OPENCV_NEW_2012}/include/ )
+find_package( OpenCV REQUIRED PATHS $ENV{OPENCV_NEW} NO_DEFAULT_PATH )
+include_directories ( $ENV{OPENCV_NEW}/include/ )
 
 include_directories ( $ENV{BOOST_INC} )
 include_directories ( $ENV{EIGEN_INC} )
