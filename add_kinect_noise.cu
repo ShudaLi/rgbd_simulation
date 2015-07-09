@@ -36,7 +36,7 @@
 #include <boost/math/common_factor_rt.hpp>
 #include <assert.h>
 
-#include <opencv2/cuda.hpp>
+#include <opencv2/cudaarithm.hpp>
 #include <opencv2/core/cuda/common.hpp>
 #include "add_kinect_noise.cuh"
 #include "vector_math.hpp"

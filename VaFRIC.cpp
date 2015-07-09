@@ -27,7 +27,7 @@
 using namespace Eigen;
 #include <opencv2/opencv.hpp>
 
-#include <opencv2/cuda.hpp>
+#include <opencv2/cudaarithm.hpp>
 #include <opencv2/core/cuda/common.hpp>
 using namespace cv;
 #include "VaFRIC.h"
