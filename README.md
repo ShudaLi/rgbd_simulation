@@ -1,4 +1,4 @@
-# rgbd_simulation
+# Kinectifying Synthetic Depth Maps
 This is an OpenCV package for simulating Kinect noise as described in the following paper:
 
 A Benchmark for RGB-D Visual Odometry , 3D Reconstruction and SLAM. 
