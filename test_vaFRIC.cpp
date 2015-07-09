@@ -34,7 +34,6 @@ using namespace Eigen;
 using namespace cv;
 
 #define INFO
-#include "EigenUtil.hpp"
 #include "VaFRIC.h"
 
 

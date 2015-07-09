@@ -13,7 +13,6 @@ include_directories ( $ENV{OPENCV_NEW}/include/ )
 
 include_directories ( $ENV{BOOST_INC} )
 include_directories ( $ENV{EIGEN_INC} )
-include_directories ( $ENV{OPENCV_SRC}/common/ )
 
 link_directories ( $ENV{BOOST_LIB} )
 
