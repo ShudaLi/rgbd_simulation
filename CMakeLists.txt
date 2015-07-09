@@ -7,6 +7,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 find_package(CUDA)
 include(FindCUDA)
+find_package(Boost ${QUIET_} REQUIRED COMPONENTS filesystem system)
 
 find_package( OpenCV REQUIRED PATHS $ENV{OPENCV_NEW} NO_DEFAULT_PATH )
 include_directories ( $ENV{OPENCV_NEW}/include/ )
@@ -18,6 +19,6 @@ link_directories ( $ENV{BOOST_LIB} )
 
 #The rule to build the executable program matrixMul from matrixmul.cu
 CUDA_ADD_EXECUTABLE(ICL add_kinect_noise.cu add_kinect_noise.cuh VaFRIC.h vector_math.hpp VaFRIC.cpp test_vaFRIC.cpp)
-target_link_libraries( ICL ${OpenCV_LIBS} )
+target_link_libraries( ICL ${OpenCV_LIBS} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
 
