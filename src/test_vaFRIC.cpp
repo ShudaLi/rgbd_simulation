@@ -21,12 +21,17 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
+#define  _USE_MATH_DEFINES
+#include <math.h>
 
 #include <iostream>
 #include <stdio.h>
 #include <Eigen/Eigenvalues>
 #include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <se3.hpp>
 using namespace Eigen;
+using namespace Sophus;
 #include <opencv2/opencv.hpp>
 
 #include <opencv2/cudaarithm.hpp>
@@ -84,10 +89,78 @@ void printNormalImage(const GpuMat& depth_gpu, string& name_){
 	imwrite(name_.c_str(),normal_image);
 }
 
+boost::shared_ptr<ifstream> _pInputFile;
+int idx;
+vector<SE3Group<double>> _v_T_wc;
+void load_trajectory()
+{
+	string input_path_name("D:\\Dataset\\icl\\noise_lvl_0\\living_room_traj0_loop\\");
+	string gt_traj("livingRoom0.gt.freiburg");
+	input_path_name += gt_traj;
+	_pInputFile.reset(new ifstream(input_path_name.c_str()));
+	Vector3d t;
+	double qx, qy, qz, qw;
+	while ((*_pInputFile) >> idx >> t[0] >> t[1] >> t[2] >> qx >> qy >> qz >> qw) 
+	{
+		SO3Group<double> R_wc(Quaterniond(qw, qx, qy, qz));
+		SE3Group<double> T_wc(R_wc,t);
+		_v_T_wc.push_back(T_wc);
+	}
+	return;
+}
+
+Vector4d B(double u_){
+	double u_2 = u_*u_;
+	double u_3 = u_2*u_;
+	Vector4d Bu;
+	Bu(0) = 1; 
+	Bu(1) = .83333333 + .5 * u_ - .5 * u_2 + .16666667 * u_3;
+	Bu(2) = .16666667 + .5 * u_ + .5 * u_2 + .33333333 * u_3;
+	Bu(3) = .16666667 * u_3;;
+	return Bu;
+}
+
+SE3Group<double> bsplineT(double u_, int i_){
+	assert(0 < i_ && i_ < _v_T_wc.size() - 2);
+
+	SE3Group<double>& T_0 = _v_T_wc[i_ - 1];
+	SE3Group<double>& T_1 = _v_T_wc[i_];
+	SE3Group<double>& T_2 = _v_T_wc[i_+ 1];
+	SE3Group<double>& T_3 = _v_T_wc[i_+ 2];
+
+	SE3Group<double> T_01 = T_0.inverse() * T_1;
+	SE3Group<double> T_12 = T_1.inverse() * T_2;
+	SE3Group<double> T_23 = T_2.inverse() * T_3;
+
+	Vector4d Bu = B(u_);
+
+	Vector6d O_1 = Bu(1)*T_01.log();
+	Vector6d O_2 = Bu(2)*T_12.log();
+	Vector6d O_3 = Bu(3)*T_23.log();
+
+	SE3Group<double> res = T_0 * SE3Group<double>::exp( O_1 ) * SE3Group<double>::exp( O_2 ) * SE3Group<double>::exp( O_3 );
+	return res;
+}
+
+void test_bspline(){
+	cout << _v_T_wc[1].matrix() << endl;
+	for (double u_ = 0.4; u_ < 1.; u_ += 0.4)
+	{
+		SE3Group<double> sample = bsplineT(u_, 1);
+		cout << sample.matrix() << endl;
+	}
+	cout << _v_T_wc[2].matrix() << endl;
+	return;
+}
+
 int main(int argc, char** argv)
 {
-	string input_path_name ("D:\\Downloads\\icl\\noise_lvl_0\\living_room_traj0_loop\\");
-	string output_path_name("D:\\Downloads\\icl\\noise_lvl_1\\living_room_traj0_loop\\");
+	load_trajectory();
+
+	test_bspline();
+
+	string input_path_name ("D:\\Dataset\\icl\\noise_lvl_0\\living_room_traj0_loop\\");
+	string output_path_name("D:\\Dataset\\icl\\noise_lvl_1\\living_room_traj0_loop\\");
 	const int nTotal = init(input_path_name);
     cout<<"Number of text files = " << nTotal << endl;
 

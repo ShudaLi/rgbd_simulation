@@ -13,6 +13,7 @@ find_package( OpenCV REQUIRED PATHS $ENV{OPENCV_NEW} NO_DEFAULT_PATH )
 include_directories ( $ENV{OPENCV_NEW}/include/ )
 
 include_directories ( $ENV{BOOST_INC} )
+include_directories ( $ENV{SOPHUS_INC} )
 include_directories ( $ENV{EIGEN_INC} )
 
 link_directories ( $ENV{BOOST_LIB} )

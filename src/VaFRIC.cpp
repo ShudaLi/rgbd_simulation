@@ -22,6 +22,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 //eigen
+#define  _USE_MATH_DEFINES
+#include <math.h>
 #include <Eigen/Eigenvalues>
 #include <Eigen/Core>
 using namespace Eigen;
