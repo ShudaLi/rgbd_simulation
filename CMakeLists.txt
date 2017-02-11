@@ -16,6 +16,11 @@ include_directories ( $ENV{BOOST_INC} )
 include_directories ( $ENV{SOPHUS_INC} )
 include_directories ( $ENV{EIGEN_INC} )
 
+if(UNIX)
+	find_package( Eigen3 REQUIRED)	
+	find_package( Sophus REQUIRED)
+endif()
+
 link_directories ( $ENV{BOOST_LIB} )
 
 #The rule to build the executable program matrixMul from matrixmul.cu
