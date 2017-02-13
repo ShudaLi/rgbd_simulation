@@ -188,7 +188,7 @@ int main(int argc, char** argv)
 	for (int img_no=0; img_no< nTotal; img_no++)
 	{
 		// add image noise
-		{
+		if(false){
 			string imgName = getImageFileName( input_path_name, img_no, 0 );
 
 			Mat image = imread(imgName.c_str());
@@ -225,6 +225,7 @@ int main(int argc, char** argv)
 								 480, 0.8, 0.035,
 								 0, 0, 0 );
 		//convert vertex to depth
+		depth_float_gpu.setTo(0.f);
 		convertVerts2Depth( &noisy_vertex_gpu, &depth_float_gpu, make_float2(K[0][2],K[1][2]), make_float2(K[0][0],K[1][1]) );
 		//printNormalImage(depth_float_gpu,string("ni_2.png"));
 
