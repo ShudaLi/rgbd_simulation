@@ -155,12 +155,9 @@ void test_bspline(){
 
 int main(int argc, char** argv)
 {
-	load_trajectory();
-
-	test_bspline();
-
-	string input_path_name ("D:\\Dataset\\icl\\noise_lvl_0\\living_room_traj0_loop\\");
-	string output_path_name("D:\\Dataset\\icl\\noise_lvl_1\\living_room_traj0_loop\\");
+	// edit the following line to specify input folders and output folders
+	string input_path_name ("..\\icl\\noise_lvl_0\\living_room_traj0_loop\\");
+	string output_path_name("..\\icl\\noise_lvl_1\\living_room_traj0_loop\\");
 	const int nTotal = init(input_path_name);
     cout<<"Number of text files = " << nTotal << endl;
 
