@@ -30,11 +30,16 @@ $ make
 
 # How to get started
 
-* Download the noise free RGB-D data from ICL dataset.
-* Extract the file into a folder.
+* Download the noise free RGB-D data from [ICL dataset](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.html).
+* Extract the file into a folder. (tar -xvf living.tar.gz).  
 * Edit line 159 - 160 to specify the input and output folder.
 * compile again and excute the code.
+
 ```
 $ make
 $ ./ICL
 ```
+
+# Example of simulated depth noise
+
+<img src="readme_images/original.png" align="left" width="320" ><br><br><br><br><br><br><br><br><br><br>

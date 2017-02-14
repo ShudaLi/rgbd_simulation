@@ -92,66 +92,6 @@ void printNormalImage(const GpuMat& depth_gpu, string& name_){
 boost::shared_ptr<ifstream> _pInputFile;
 int idx;
 vector<SE3Group<double>> _v_T_wc;
-void load_trajectory()
-{
-	string input_path_name("D:\\Dataset\\icl\\noise_lvl_0\\living_room_traj0_loop\\");
-	string gt_traj("livingRoom0.gt.freiburg");
-	input_path_name += gt_traj;
-	_pInputFile.reset(new ifstream(input_path_name.c_str()));
-	Vector3d t;
-	double qx, qy, qz, qw;
-	while ((*_pInputFile) >> idx >> t[0] >> t[1] >> t[2] >> qx >> qy >> qz >> qw) 
-	{
-		SO3Group<double> R_wc(Quaterniond(qw, qx, qy, qz));
-		SE3Group<double> T_wc(R_wc,t);
-		_v_T_wc.push_back(T_wc);
-	}
-	return;
-}
-
-Vector4d B(double u_){
-	double u_2 = u_*u_;
-	double u_3 = u_2*u_;
-	Vector4d Bu;
-	Bu(0) = 1; 
-	Bu(1) = .83333333 + .5 * u_ - .5 * u_2 + .16666667 * u_3;
-	Bu(2) = .16666667 + .5 * u_ + .5 * u_2 + .33333333 * u_3;
-	Bu(3) = .16666667 * u_3;;
-	return Bu;
-}
-
-SE3Group<double> bsplineT(double u_, int i_){
-	assert(0 < i_ && i_ < _v_T_wc.size() - 2);
-
-	SE3Group<double>& T_0 = _v_T_wc[i_ - 1];
-	SE3Group<double>& T_1 = _v_T_wc[i_];
-	SE3Group<double>& T_2 = _v_T_wc[i_+ 1];
-	SE3Group<double>& T_3 = _v_T_wc[i_+ 2];
-
-	SE3Group<double> T_01 = T_0.inverse() * T_1;
-	SE3Group<double> T_12 = T_1.inverse() * T_2;
-	SE3Group<double> T_23 = T_2.inverse() * T_3;
-
-	Vector4d Bu = B(u_);
-
-	Vector6d O_1 = Bu(1)*T_01.log();
-	Vector6d O_2 = Bu(2)*T_12.log();
-	Vector6d O_3 = Bu(3)*T_23.log();
-
-	SE3Group<double> res = T_0 * SE3Group<double>::exp( O_1 ) * SE3Group<double>::exp( O_2 ) * SE3Group<double>::exp( O_3 );
-	return res;
-}
-
-void test_bspline(){
-	cout << _v_T_wc[1].matrix() << endl;
-	for (double u_ = 0.4; u_ < 1.; u_ += 0.4)
-	{
-		SE3Group<double> sample = bsplineT(u_, 1);
-		cout << sample.matrix() << endl;
-	}
-	cout << _v_T_wc[2].matrix() << endl;
-	return;
-}
 
 int main(int argc, char** argv)
 {
@@ -211,9 +151,9 @@ int main(int argc, char** argv)
 		depth_gpu.convertTo( depth_float_gpu, CV_32FC1, 1/1000.f );
 		//printNormalImage(depth_float_gpu,string("ni_1.png"));
 
-		//1.
+		//1. 
 		convertDepth2Verts( depth_float_gpu, &vertex_gpu, make_float2(K[0][2],K[1][2]), make_float2(K[0][0],K[1][1]) );
-		cudaFastNormalEstimation( vertex_gpu, &normal_gpu );
+		cudaFastNormalEstimation( vertex_gpu, &normal_gpu ); // estimate surface normal
 		launch_add_kinect_noise( (float3*)vertex_gpu.data,
 								 (float3*)normal_gpu.data,
 								 (float3*)noisy_vertex_gpu.data,
