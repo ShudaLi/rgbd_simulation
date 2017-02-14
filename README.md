@@ -42,6 +42,6 @@ $ ./ICL
 
 # Example of simulated depth noise
 
-<img src="readme_images/comparison.png" align="left" width="320" ><br><br><br><br><br><br><br><br><br><br>
+<img src="readme_images/comparison.png" align="left" width="1280" ><br><br><br><br><br><br><br><br><br><br>
 
 The left is the original depth map and right is depth map with simulated kinect noise added.
